@@ -6,6 +6,7 @@ import com.income.robot.code.mapper.PddTrackOrderMapper;
 import com.income.robot.code.service.IPddTrackOrderService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.income.robot.service.dto.GoodsWaitDTO;
+import com.income.robot.service.strategy.KongBaoParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +22,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class PddTrackOrderServiceImpl extends ServiceImpl<PddTrackOrderMapper, PddTrackOrder> implements IPddTrackOrderService {
 
-    public String getTrackNo(GoodsWaitDTO goodsWaitDTO) {
+    public String getTrackNo(GoodsWaitDTO kongBaoParam) {
         PddTrackOrder trackOrder = getOne(new LambdaQueryWrapper<PddTrackOrder>()
-                .eq(PddTrackOrder::getOrderNo, goodsWaitDTO.getOrderId())
-                .eq(PddTrackOrder::getShopId, goodsWaitDTO.getShopId()));
+                .eq(PddTrackOrder::getOrderNo, kongBaoParam.getOrderId())
+                .eq(PddTrackOrder::getShopId, kongBaoParam.getShopId()));
         if (null == trackOrder) {
             return null;
         }
-        log.info("通过下单号获取运单号成功：shopId:{},orderId:{},trackNo:{}", new Object[] { trackOrder.getShopId(), goodsWaitDTO.getOrderId(), trackOrder.getTrackNo() });
+        log.info("通过下单号获取运单号成功：shopId:{},orderId:{},trackNo:{}", new Object[] { trackOrder.getShopId(), kongBaoParam.getOrderId(), trackOrder.getTrackNo() });
         return trackOrder.getTrackNo();
     }
 

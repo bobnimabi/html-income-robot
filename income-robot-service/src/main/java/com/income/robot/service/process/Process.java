@@ -1,11 +1,5 @@
 package com.income.robot.service.process;
 
-import com.alibaba.fastjson.JSON;
-import com.income.robot.code.entity.PddKonbbaoAccount;
-import com.income.robot.code.entity.PddKonbbaoInfo;
-import com.income.robot.code.service.IPddKonbbaoAccountService;
-import com.income.robot.code.service.IPddKonbbaoInfoService;
-import com.income.robot.service.strategy.IKongBaoStragegy;
 import com.income.robot.service.strategy.KongBaoParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +12,22 @@ import java.util.Map;
 @Slf4j
 public class Process implements IProcess {
 
-    @Override
-    public TrackResult getTrackNo(KongBaoParam kongBaoParam) {
-        return getTrackNoByKongBao(kongBaoParam);
-    }
+    @Autowired
+    private TrackNoByKongBao trackNoByKongBao;
 
+    @Autowired
+    private TrackNoByMysql trackNoByMysql;
+
+    @Override
+    public TrackResult getTrackNo(KongBaoParam kongBaoParam) throws Exception {
+        // 从数据库获取
+        TrackResult result = trackNoByMysql.getByMysql(kongBaoParam);
+
+        if (result.getSuccess()) {
+            return result;
+        }
+
+        // 从空包网获取
+        return this.trackNoByKongBao.getTrackNoByKongBao(kongBaoParam);
+    }
 }

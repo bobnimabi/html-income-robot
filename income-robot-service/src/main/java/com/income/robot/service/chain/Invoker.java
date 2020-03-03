@@ -5,7 +5,7 @@ import org.apache.poi.ss.formula.functions.T;
 import java.util.List;
 
 public abstract class Invoker {
-    abstract <T>boolean invoke(T invocation) throws Exception;
+    public abstract <T>boolean invoke(T invocation) throws Exception;
   
     public static final Invoker buildInvokerChain(List<Filter> filters) {
       Invoker last = null;
@@ -15,7 +15,7 @@ public abstract class Invoker {
           final Invoker next = last;
           last = new Invoker() {
               @Override
-              <T> boolean invoke(T invocation) throws Exception {
+              public <T> boolean invoke(T invocation) throws Exception {
                 return filter.doFilterFinal(next, invocation);
               }
           };

@@ -13,5 +13,5 @@ public interface IProcess {
      * @param kongBaoParam
      * @return
      */
-    TrackResult getTrackNo(KongBaoParam kongBaoParam);
+    TrackResult getTrackNo(KongBaoParam kongBaoParam) throws Exception;
 }

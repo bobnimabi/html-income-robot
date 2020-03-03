@@ -20,6 +20,9 @@ import com.income.robot.code.service.IPddTrackOrderService;
 import com.income.robot.code.service.IPddTrackService;
 import com.income.robot.service.mq.MqSenter;
 import com.income.robot.service.dto.GoodsWaitDTO;
+import com.income.robot.service.process.IProcess;
+import com.income.robot.service.process.TrackResult;
+import com.income.robot.service.strategy.KongBaoParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,16 +45,10 @@ public class Server {
   private String filePath;
   
   @Autowired
-  private IPddDictService dictService;
-  
-  @Autowired
-  private IPddTrackService trackService;
-  
-  @Autowired
   private IPddTrackOrderService orderService;
 
   @Autowired
-  private KongBaoServer kongBaoServer;
+  private IProcess process;
   
   private static final String filePathPrefix = "/files";
   
@@ -77,54 +74,18 @@ public class Server {
       log.info("待发货：重复调用，不调用mq：shopId：{},orderId:{}，trackNo:{}", goodsWaitDTO.getShopId(), goodsWaitDTO.getOrderId(), trackNo);
       return ResponseResult.SUCCESS(trackNo);
     }
-    StringBuilder error = new StringBuilder();
-    String trackingNo = getTrackingNo(goodsWaitDTO, error);
-    if (StringUtils.isEmpty(trackingNo)) {
-        log.info("{},orderId:{}", goodsWaitDTO.getShopId(), goodsWaitDTO.getOrderId());
-        return ResponseResult.FAIL(error.toString());
+
+    KongBaoParam kongBaoParam = new KongBaoParam();
+    MyBeanUtil.copyProperties(goodsWaitDTO,kongBaoParam);
+    TrackResult trackResult = process.getTrackNo(kongBaoParam);
+    if (!trackResult.getSuccess()) {
+      log.info("获取运单号失败，失败原因{}，shopId:{},orderId:{},", trackResult.getError(), goodsWaitDTO.getShopId(), goodsWaitDTO.getOrderId());
+      return ResponseResult.FAIL(trackResult.getError());
     }
     TenantIncomeShopOrderPaySuccessDTO paySuccessDTO = (TenantIncomeShopOrderPaySuccessDTO)MyBeanUtil.copyProperties(goodsWaitDTO, TenantIncomeShopOrderPaySuccessDTO.class);
     paySuccessDTO.setOrderType(Integer.valueOf(1));
     this.mqSenter.sendMessage("income.orderPaySuccessExchange", "incomeOrderPaySuccessRouteKey", paySuccessDTO);
-    return ResponseResult.SUCCESS(trackingNo);
-  }
-  
-  private String getTrackingNo(GoodsWaitDTO goodsWaitDTO, StringBuilder error) throws InterruptedException {
-    String trackingNo = null;
-    if (StringUtils.isNotEmpty(goodsWaitDTO.getLoginName())) {
-      trackingNo = getTrackNoByMysql(goodsWaitDTO);
-      if (StringUtils.isEmpty(trackingNo)) {
-        trackingNo = kongBaoServer.getTrackNoByKongBao(goodsWaitDTO, error);
-        if (StringUtils.isEmpty(trackingNo))
-          return null;
-        trackService.saveTrack(goodsWaitDTO, trackingNo);
-      }
-    } else {
-      trackingNo = kongBaoServer.getTrackNoByKongBao(goodsWaitDTO, error);
-      if (StringUtils.isEmpty(trackingNo))
-        return null;
-    }
-    orderService.saveTrackOrder(trackingNo, goodsWaitDTO.getOrderId(), goodsWaitDTO.getShopId());
-    return trackingNo;
-  }
-  
-  private String getTrackNoByMysql(GoodsWaitDTO goodsWaitDTO) {
-    LocalDateTime time_20 = LocalDateTime.now().withHour(20).withMinute(0).withSecond(0);
-    LocalDateTime startTime = (LocalDateTime.now().compareTo(time_20) < 0) ? time_20.minusDays(1L) : time_20;
-    List<PddTrack> list = trackService.list(
-            new LambdaQueryWrapper<PddTrack>()
-                    .eq(PddTrack::getMobileNum, goodsWaitDTO.getLoginName())
-                    .eq(PddTrack::getShopId, goodsWaitDTO.getShopId())
-                    .eq(PddTrack::getHasNum, Boolean.valueOf(true))
-                    .ge(PddTrack::getGmtCreateTime, startTime)
-                    .orderByDesc(PddTrack::getGmtCreateTime)
-    );
-    if (CollectionUtils.isEmpty(list) || null == list.get(0)) {
-        return null;
-    }
-    PddTrack trackNo = list.get(0);
-    trackService.updateTrankNo(trackNo);
-    return trackNo.getTrackNo();
+    return ResponseResult.SUCCESS(trackResult.getTrackNo());
   }
 
   /**

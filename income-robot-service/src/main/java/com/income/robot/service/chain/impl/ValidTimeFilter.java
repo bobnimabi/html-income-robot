@@ -1,10 +1,10 @@
-package com.income.robot.server.chain;
+package com.income.robot.service.chain.impl;
 
 import com.income.robot.code.entity.PddMergeRule;
 import com.income.robot.code.entity.PddTrack;
 import com.income.robot.service.chain.Filter;
 import com.income.robot.service.chain.Invoker;
-import com.income.robot.service.dto.GoodsWaitDTO;
+import com.income.robot.service.strategy.KongBaoParam;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
@@ -18,8 +18,8 @@ public class ValidTimeFilter extends Filter<RuleInvocation> {
 
     @Override
     protected boolean dofilter(Invoker invoker, RuleInvocation invocation) throws Exception {
-        GoodsWaitDTO goodsWaitDTO = invocation.getData();
-        PddMergeRule pddMergeRule = invocation.getRules();
+        KongBaoParam goodsWaitDTO = invocation.getData();
+        PddMergeRule pddMergeRule = invocation.getRule();
         PddTrack mergeRecord = invocation.getMergeRecord();
 
         Integer validTime = pddMergeRule.getValidTime();

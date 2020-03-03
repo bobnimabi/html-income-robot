@@ -30,4 +30,14 @@ public interface IPddTrackService extends IService<PddTrack> {
      * @param paddTrack
      */
     void updateTrankNo(PddTrack paddTrack);
+
+
+    /**
+     * 获取最新的满足规则的运单号
+     * 条件：同一卖家、同一买家、同一合并规则
+     *
+     * @return
+     */
+    PddTrack getNewTrack(KongBaoParam kongBaoParam, PddMergeRule mergeRule);
+
 }

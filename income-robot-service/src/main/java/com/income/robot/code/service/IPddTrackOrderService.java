@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.income.robot.code.entity.PddTrackOrder;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.income.robot.service.dto.GoodsWaitDTO;
+import com.income.robot.service.strategy.KongBaoParam;
 
 /**
  * <p>
@@ -16,10 +17,10 @@ import com.income.robot.service.dto.GoodsWaitDTO;
 public interface IPddTrackOrderService extends IService<PddTrackOrder> {
     /**
      * 通过下单号和店铺id获取运单号
-     * @param goodsWaitDTO
+     * @param kongBaoParam
      * @return
      */
-    String getTrackNo(GoodsWaitDTO goodsWaitDTO);
+    String getTrackNo(GoodsWaitDTO kongBaoParam);
 
     /**
      * 绑定运单号和下单号

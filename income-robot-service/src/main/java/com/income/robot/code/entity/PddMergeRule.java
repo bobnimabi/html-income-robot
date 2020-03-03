@@ -87,6 +87,4 @@ public class PddMergeRule implements Serializable {
      * 创建时间
      */
     private LocalDateTime gmtCreateTime;
-
-
 }
