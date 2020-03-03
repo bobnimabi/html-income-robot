@@ -27,6 +27,7 @@ public class HttpClientUtil {
     String resultString = "";
     CloseableHttpResponse response = null;
     try {
+
       URIBuilder builder = new URIBuilder(url);
       if (param != null)
         for (String key : param.keySet())
