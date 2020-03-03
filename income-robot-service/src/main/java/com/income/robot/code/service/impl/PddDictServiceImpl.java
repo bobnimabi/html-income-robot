@@ -1,5 +1,6 @@
 package com.income.robot.code.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.income.robot.code.entity.PddDict;
 import com.income.robot.code.mapper.PddDictMapper;
 import com.income.robot.code.service.IPddDictService;
@@ -16,5 +17,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PddDictServiceImpl extends ServiceImpl<PddDictMapper, PddDict> implements IPddDictService {
+    public String getDict(String key) {
+        PddDict dict = getOne(new LambdaQueryWrapper<PddDict>()
+                .eq(PddDict::getDictKey, key));
+        return dict.getDictValue();
+    }
 
 }

@@ -1,4 +1,4 @@
-package com.income.robot.server.util;
+package com.income.robot.service.strategy;
 
 
 import java.io.IOException;
@@ -27,11 +27,10 @@ public class HttpClientUtil {
     String resultString = "";
     CloseableHttpResponse response = null;
     try {
-
       URIBuilder builder = new URIBuilder(url);
       if (param != null)
         for (String key : param.keySet())
-          builder.addParameter(key, param.get(key));
+          builder.addParameter(key, param.get(key));  
       URI uri = builder.build();
       HttpGet httpGet = new HttpGet(uri);
       response = httpclient.execute((HttpUriRequest)httpGet);

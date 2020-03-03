@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2020-02-26
  */
 public interface IPddDictService extends IService<PddDict> {
-
+    String getDict(String key);
 }

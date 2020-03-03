@@ -30,7 +30,7 @@ public class CodeGenerator {
                 "pdd_track",
                 "pdd_track_order",
                 "pdd_merge_rule",
-
+                "pdd_konbbao_info"
         };
         MyCodeGenUtils.genCode(projectPath, driverClassName,url, username, password, modelName, parentName, tables);
     }

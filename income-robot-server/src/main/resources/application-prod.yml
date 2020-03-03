@@ -71,9 +71,6 @@ ribbon:
   ConnectTimeout: 5000  #
   ReadTimeout: 6000 #
 
-#
-TRANSFER:
-  EXPRESSAGE_URL: http://www.kongbao100.com/OrderSubmit/index.asp
 fileSystem:
   filePath: /usr/local/media_files/files
 PERMIT_URL: /**

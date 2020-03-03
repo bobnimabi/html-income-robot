@@ -23,9 +23,9 @@ public class MqSenter {
       ThreadLocalUtils.setTenantId(RobotThreadLocalUtils.getTenantId());
       ThreadLocalUtils.setChannelId(RobotThreadLocalUtils.getChannelId());
       try {
-        this.rabbitTemplate.convertAndSend(exchange, route, obj);
+            this.rabbitTemplate.convertAndSend(exchange, route, obj);
       } finally {
-        ThreadLocalUtils.clean();
+            ThreadLocalUtils.clean();
       }
   }
 }

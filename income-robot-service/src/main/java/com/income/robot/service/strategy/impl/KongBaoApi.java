@@ -1,8 +1,7 @@
-package com.income.robot.server.kongbao;
+package com.income.robot.service.strategy.impl;
 
 
 import com.alibaba.fastjson.JSON;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -12,41 +11,44 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.income.robot.server.util.HttpClientUtil;
+import com.income.robot.code.entity.PddKonbbaoInfo;
 import com.income.robot.service.dto.SenderOuterDTO;
+import com.income.robot.service.strategy.HttpClientUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+/**
+ * 空包100提供的API
+ */
 @Slf4j
 @Service
 public class KongBaoApi {
-
-    @Value("${TRANSFER.EXPRESSAGE_URL}")
-    private String EXPRESSAGE_URL;
-
-    public String send(String account, String password, String logiType, SenderOuterDTO senderOuterDTO) {
+    public String send(PddKonbbaoInfo info, String logiType, SenderOuterDTO senderOuterDTO) {
         Map<String, String> parammap = new HashMap<>();
         SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String timestamp = s.format(new Date());
-        parammap.put("appKey", account);
+        parammap.put("appKey", info.getAccount());
         parammap.put("orders", JSON.toJSONString(senderOuterDTO));
         parammap.put("timestamp", timestamp);
         parammap.put("logiType", logiType);
         Set<String> set = new TreeSet<>();
-        for (String m : parammap.keySet())
+        for (String m : parammap.keySet()) {
             set.add(m);
+        }
         StringBuffer signbuffer = new StringBuffer();
-        signbuffer.append(MD5(password, "16"));
-        for (String param : set)
+        signbuffer.append(MD5(info.getPassword(), "16"));
+        for (String param : set) {
             signbuffer.append(param).append(parammap.get(param));
-        signbuffer.append(MD5(password, "16"));
+        }
+        signbuffer.append(MD5(info.getPassword(), "16"));
         parammap.put("sign", MD5(signbuffer.toString(), "32").toUpperCase());
         log.info("{}", JSON.toJSONString(parammap, true));
-        return HttpClientUtil.doPost(this.EXPRESSAGE_URL, parammap);
+        return HttpClientUtil.doPost(info.getApiUrl(), parammap);
+
     }
 
-    public static String MD5(String sourceStr, String flag) {
+    private static String MD5(String sourceStr, String flag) {
         String result = "";
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");

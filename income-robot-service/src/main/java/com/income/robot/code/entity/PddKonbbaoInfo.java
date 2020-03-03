@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 拼多多运单号
+ * 空包网账号信息
  * </p>
  *
  * @author admin
@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class PddTrack implements Serializable {
+public class PddKonbbaoInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -27,39 +27,44 @@ public class PddTrack implements Serializable {
     private Long id;
 
     /**
-     * 合并规则id
-     */
-    private Long mergeRuleId;
-
-    /**
      * 租户id
      */
     private Long tenantId;
 
     /**
-     * 包网平台的id （机器人用于）tenant_channel表的id
+     * 包网平台的id
      */
     private Long channelId;
 
     /**
-     * 下单手机号
+     * 空包网名称
      */
-    private String mobileNum;
+    private String name;
 
     /**
-     * 店铺id
+     * 空包网账号
      */
-    private String shopId;
+    private String account;
 
     /**
-     * 运单号
+     * 空包网密码
      */
-    private String trackNo;
+    private String password;
 
     /**
-     * 已用次数
+     * 获取运单号的URL
      */
-    private Integer useNum;
+    private String apiUrl;
+
+    /**
+     * 空包网策略（注意：首字母小写），oneHundredStrategy
+     */
+    private String strategy;
+
+    /**
+     * 登录URL
+     */
+    private String loginUrl;
 
     /**
      * 是否有效 1有效  0无效
