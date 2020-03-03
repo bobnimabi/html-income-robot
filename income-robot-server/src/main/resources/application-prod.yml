@@ -1,0 +1,82 @@
+spring:
+  application:
+    name: robot-pdd-transfer-server
+  cloud:
+    refresh:
+      refreshable: none #
+  jackson:
+    default-property-inclusion: non_null #
+  redis:
+    host: pdd.redis.bbin.com
+    port: 6379
+    password: 'nmbW_y1:478!?renminbihenzhiqian'
+    timeout: 5000 #
+    database: 0
+    jedis:
+      pool:
+        maxActive: 100
+        minIdle: 10
+        maxWait: -1 #-1
+  datasource:
+    username: 'auto_update10'
+    password: 'p7oXaL)(8det*&h^540k**76jfikc*f'
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://pdd.mysql.bbin.com/pdd_robot?characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 500
+      auto-commit: true
+      idle-timeout: 30000
+      pool-name: DatebookHikariCP
+      max-lifetime: 1800000
+      connection-timeout: 10000
+      connection-test-query: SELECT 1
+  rabbitmq:
+    host: prod.rabbitmq.com
+    port: 5672
+    username: admin
+    password: qazwsx!
+    publisher-returns: true
+    publisher-confirms: true
+    listener:
+      direct:
+        acknowledge-mode: manual
+      simple:
+        acknowledge-mode: manual
+        enabled: true #
+        max-attempts: 1    #
+        initial-interval: 5000  #
+        max-interval: 1200000 #
+        multiplier: 5 #
+
+server:
+  port: 8213
+  servlet:
+    context-path: /transferRobot
+
+eureka:
+  instance:
+    lease-renewal-interval-in-seconds: 2
+    lease-expiration-duration-in-seconds: 3
+    registry-fetch-interval-seconds: 200 # Eureka Client
+    prefer-ip-address: true
+  client:
+    serviceUrl:
+      defaultZone: http://pdd.eureka.com:8761/eureka
+
+ribbon:
+  MaxAutoRetries: 2 #
+  MaxAutoRetriesNextServer: 3 #
+  OkToRetryOnAllOperations: false  #
+  ConnectTimeout: 5000  #
+  ReadTimeout: 6000 #
+
+#
+TRANSFER:
+  EXPRESSAGE_URL: http://www.kongbao100.com/OrderSubmit/index.asp
+fileSystem:
+  filePath: /usr/local/media_files/files
+PERMIT_URL: /**
+#
+logging:
+  config: classpath:log4j2-prod.xml

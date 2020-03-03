@@ -1,0 +1,97 @@
+spring:
+  application:
+    name: robot-pdd-transfer-server
+  cloud:
+    refresh:
+      refreshable: none #
+  jackson:
+    default-property-inclusion: non_null #
+  redis:
+    host: redis.com
+    password: admin1234
+    port: 6379
+    timeout: 5000 #
+    database: 0
+    jedis:
+      pool:
+        maxActive: 3
+        maxIdle: 3
+        minIdle: 1
+        maxWait: -1 #-1
+  datasource:
+    username: root
+    password: '0PKpK0JJD?mM'
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql.com/pdd_robot?characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 500
+      auto-commit: true
+      idle-timeout: 30000
+      pool-name: DatebookHikariCP
+      max-lifetime: 1800000
+      connection-timeout: 10000
+  rabbitmq:
+    #    host: dev.rabbitmq.com
+    #    port: 5672
+    username: user_admin
+    password: admin123456
+    publisher-returns: true
+    publisher-confirms: true
+    listener:
+      direct:
+        acknowledge-mode: manual
+      simple:
+        acknowledge-mode: manual
+        enabled: true #
+        max-attempts: 1    #
+        initial-interval: 5000  #
+        max-interval: 1200000 #
+        multiplier: 5 #
+    cache:
+      channel:
+        size: 500
+    addresses: node1:5672 , node2:5672 , node3:5672
+
+server:
+  port: 8213
+  servlet:
+    context-path: /transferRobot
+
+eureka:
+  instance:
+    lease-renewal-interval-in-seconds: 200
+    lease-expiration-duration-in-seconds: 300
+    registry-fetch-interval-seconds: 200 # Eureka Client
+    prefer-ip-address: true
+  client:
+    #Server
+    #    register-with-eureka: false
+    #Server
+    #    fetch-registry: false
+    serviceUrl:
+      defaultZone: http://eureka.com:8761/eureka
+
+ribbon:
+  ServerListRefreshInterval: 2  # ribbon cache
+  MaxAutoRetries: 2 #
+  MaxAutoRetriesNextServer: 3 #
+  OkToRetryOnAllOperations: false  #
+  ConnectTimeout: 5000  #
+  ReadTimeout: 6000 #
+
+#
+logging:
+  config: classpath:log4j2-dev.xml
+
+#
+TRANSFER:
+  EXPRESSAGE_URL: http://www.kongbao100.com/OrderSubmit/index.asp
+  #http://www.szjub.net/OrderSubmit/index.asp
+
+PERMIT_URL: /**
+fileSystem:
+  filePath: e:/temp
+
+
+#

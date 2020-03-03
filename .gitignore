@@ -1,0 +1,4 @@
+# Project exclude paths
+/code-generate/target/
+/income-robot-server/target/
+/income-robot-service/target/
