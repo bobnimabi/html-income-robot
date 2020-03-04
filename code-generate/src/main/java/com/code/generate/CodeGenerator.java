@@ -20,7 +20,7 @@ public class CodeGenerator {
 
         //配置数据库信息
         String driverClassName = "com.mysql.cj.jdbc.Driver";
-        String url = "jdbc:mysql://mysql.com/pdd_robot?characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true";
+        String url = "jdbc:mysql://mysql.com/income_robot?characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true";
         String username = "root";
         String password = "0PKpK0JJD?mM";
 

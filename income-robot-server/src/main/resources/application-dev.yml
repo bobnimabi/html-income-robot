@@ -22,7 +22,7 @@ spring:
     username: root
     password: '0PKpK0JJD?mM'
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql.com/pdd_robot?characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://mysql.com/income_robot?characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
     hikari:
       minimum-idle: 5
       maximum-pool-size: 500
@@ -83,11 +83,6 @@ ribbon:
 #
 logging:
   config: classpath:log4j2-dev.xml
-
-#
-TRANSFER:
-  EXPRESSAGE_URL: http://www.kongbao100.com/OrderSubmit/index.asp
-  #http://www.szjub.net/OrderSubmit/index.asp
 
 PERMIT_URL: /**
 fileSystem:
