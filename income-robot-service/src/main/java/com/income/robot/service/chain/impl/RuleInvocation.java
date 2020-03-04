@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class RuleInvocation implements Invocation {
 
     /**
@@ -29,6 +27,8 @@ public class RuleInvocation implements Invocation {
      */
     private PddTrack mergeRecord;
 
+
+    public RuleInvocation() {}
 
     public RuleInvocation(KongBaoParam data, PddMergeRule rules, PddTrack mergeRecord) {
         this.data = data;

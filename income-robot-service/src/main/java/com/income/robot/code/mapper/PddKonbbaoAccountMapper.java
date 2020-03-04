@@ -1,7 +1,7 @@
 package com.income.robot.code.mapper;
 
-import com.income.robot.code.entity.PddKonbbaoAccount;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.income.robot.code.entity.PddKonbbaoInfo;
 
 /**
  * <p>
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author admin
  * @since 2020-03-02
  */
-public interface PddKonbbaoAccountMapper extends BaseMapper<PddKonbbaoAccount> {
+public interface PddKonbbaoAccountMapper extends BaseMapper<PddKonbbaoInfo> {
 
 }

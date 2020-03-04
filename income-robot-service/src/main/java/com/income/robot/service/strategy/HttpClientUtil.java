@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -17,20 +19,23 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 public class HttpClientUtil {
+
   public static String doGet(String url, Map<String, String> param) {
-    CloseableHttpClient httpclient = HttpClients.createDefault();
+    CloseableHttpClient httpclient = createClient();
     String resultString = "";
     CloseableHttpResponse response = null;
     try {
       URIBuilder builder = new URIBuilder(url);
       if (param != null)
-        for (String key : param.keySet())
-          builder.addParameter(key, param.get(key));  
+        for (String key : param.keySet()) {
+          builder.addParameter(key, param.get(key));
+        }
       URI uri = builder.build();
       HttpGet httpGet = new HttpGet(uri);
       response = httpclient.execute((HttpUriRequest)httpGet);
@@ -55,7 +60,7 @@ public class HttpClientUtil {
   }
   
   public static String doPost(String url, Map<String, String> param) {
-    CloseableHttpClient httpClient = HttpClients.createDefault();
+    CloseableHttpClient httpClient = createClient();
     CloseableHttpResponse response = null;
     String resultString = "";
     try {
@@ -86,7 +91,7 @@ public class HttpClientUtil {
   }
   
   public static String doPostJson(String url, String json) {
-    CloseableHttpClient httpClient = HttpClients.createDefault();
+    CloseableHttpClient httpClient = createClient();
     CloseableHttpResponse response = null;
     String resultString = "";
     try {
@@ -105,5 +110,18 @@ public class HttpClientUtil {
       } 
     } 
     return resultString;
+  }
+
+  private static CloseableHttpClient createClient() {
+    // 生产用
+//    return HttpClients.createDefault();
+
+    // 测试使用代理
+    HttpClientBuilder builder = HttpClients.custom();
+    RequestConfig.Builder custom = RequestConfig.custom();
+    HttpHost proxy = new HttpHost("129.226.190.158", 6666);
+    custom.setProxy(proxy);
+    builder.setDefaultRequestConfig(custom.build());
+    return builder.build();
   }
 }

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class KongBaoApi {
+
     public String send(PddKonbbaoInfo info, String logiType, SenderOuterDTO senderOuterDTO) {
         Map<String, String> parammap = new HashMap<>();
         SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -43,7 +44,7 @@ public class KongBaoApi {
         }
         signbuffer.append(MD5(info.getPassword(), "16"));
         parammap.put("sign", MD5(signbuffer.toString(), "32").toUpperCase());
-        log.info("{}", JSON.toJSONString(parammap, true));
+        log.info("空包100参数：{}", JSON.toJSONString(parammap, true));
         return HttpClientUtil.doPost(info.getApiUrl(), parammap);
 
     }
