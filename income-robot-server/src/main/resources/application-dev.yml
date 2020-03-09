@@ -1,6 +1,6 @@
 spring:
   application:
-    name: robot-pdd-transfer-server
+    name: income-robot-server
   cloud:
     refresh:
       refreshable: none #

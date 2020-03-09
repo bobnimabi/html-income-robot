@@ -51,9 +51,9 @@ public abstract class MybatisPlusConfigBase {
      * SQL执行效率插件
      */
     @Bean
-    @Profile({"dev", "test", "prod"})// 设置 dev test 环境开启
+    @Profile({"dev"})// 设置 dev test 环境开启
     public PerformanceInterceptor performanceInterceptorProd() {
-        return new PerformanceInterceptor().setWriteInLog(true).setMaxTime(500);
+        return new PerformanceInterceptor().setWriteInLog(false);
     }
 
     @Bean
@@ -135,7 +135,7 @@ public abstract class MybatisPlusConfigBase {
         tenantSqlParser.setTenantHandler(new TenantHandler() {
             @Override
             public Expression getTenantId() {
-                return new LongValue(RobotThreadLocalUtils.getTenantId());
+                return new LongValue(1);
             }
 
             @Override
@@ -151,74 +151,4 @@ public abstract class MybatisPlusConfigBase {
         });
         return tenantSqlParser;
     }
-
-
-//--------------------------以下为改动源码!=的实现--------------------------
-    /**
-     * 重写实现!=
-     */
-    public static final class StatusTenantSqlParser extends TenantSqlParser {
-        public static final StatusTenantSqlParser INSTANCE = new StatusTenantSqlParser();
-        private StatusTenantSqlParser() {}
-        private final TenantHandler HANDLE_INSTANCE = new TenantHandler() {
-            @Override
-            public Expression getTenantId() {
-                return new LongValue(-1L);
-            }
-
-            @Override
-            public String getTenantIdColumn() {
-                return "status";
-            }
-
-            @Override
-            public boolean doTableFilter(String tableName) {
-                // 返回true，表示放行
-                return STATUS_PERMIT.contains(tableName);
-            }
-        };
-
-        // 修改、删除sql
-        @Override
-        protected BinaryExpression andExpression(Table table, Expression where) {
-
-            NotEqualsTo notEqualsTo = new NotEqualsTo();
-            notEqualsTo.setLeftExpression(this.getAliasColumn(table));
-            notEqualsTo.setRightExpression(HANDLE_INSTANCE.getTenantId());
-            if (null != where) {
-                return where instanceof OrExpression ? new AndExpression(notEqualsTo, new Parenthesis(where)) : new AndExpression(notEqualsTo, where);
-            } else {
-                return notEqualsTo;
-            }
-        }
-
-        // 查询sql
-        @Override
-        protected Expression builderExpression(Expression expression, Table table) {
-            NotEqualsTo notEqualsTo = new NotEqualsTo();
-            notEqualsTo.setLeftExpression(this.getAliasColumn(table));
-            notEqualsTo.setRightExpression(HANDLE_INSTANCE.getTenantId());
-            if (expression == null) {
-                return notEqualsTo;
-            } else {
-                if (expression instanceof BinaryExpression) {
-                    BinaryExpression binaryExpression = (BinaryExpression) expression;
-                    if (binaryExpression.getLeftExpression() instanceof FromItem) {
-                        this.processFromItem((FromItem) binaryExpression.getLeftExpression());
-                    }
-
-                    if (binaryExpression.getRightExpression() instanceof FromItem) {
-                        this.processFromItem((FromItem) binaryExpression.getRightExpression());
-                    }
-                }
-                return expression instanceof OrExpression ? new AndExpression(notEqualsTo, new Parenthesis(expression)) : new AndExpression(notEqualsTo, expression);
-            }
-        }
-
-        // 插入（不能把is_valid=0代入sql）
-        public void processInsert(Insert insert) {
-
-        }
-    }
-
 }

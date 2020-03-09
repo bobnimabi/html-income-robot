@@ -55,7 +55,7 @@ public class TrackNoByKongBao {
         TrackResult result = getTrackNoByKongBaoDetail(stragegy, info, kongBaoParam);
         if (result.getSuccess()) {
             // 数据库存入一份运单号
-            PddMergeRule rule = ruleService.getRule(kongBaoParam.getOrderPrice());
+            PddMergeRule rule = ruleService.getRule(kongBaoParam.getOrderPrice(), kongBaoParam.getShopId());
             trackService.saveTrack(kongBaoParam, result.getTrackNo(), rule);
         }
         return result;

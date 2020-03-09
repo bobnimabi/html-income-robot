@@ -6,10 +6,14 @@ import com.income.robot.code.service.IPddMergeRuleService;
 import com.income.robot.code.service.IPddTrackService;
 import com.income.robot.service.chain.Filter;
 import com.income.robot.service.chain.Invoker;
+import com.income.robot.service.chain.impl.NumberFilter;
 import com.income.robot.service.chain.impl.RuleInvocation;
+import com.income.robot.service.chain.impl.ValidTimeFilter;
 import com.income.robot.service.strategy.KongBaoParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,13 +27,25 @@ import java.util.List;
 public class TrackNoByMysql {
 
     @Autowired
-    private List<Filter> filters;
+    private NumberFilter numberFilter;
+
+    @Autowired
+    private ValidTimeFilter validTimeFilter;
 
     @Autowired
     private IPddMergeRuleService ruleService;
 
     @Autowired
     private IPddTrackService trackService;
+
+    @Autowired
+    private Invoker invoker;
+
+    @Bean
+    public Invoker afterPropertiesSet(List<Filter> filters) throws Exception {
+        this.invoker = Invoker.buildInvokerChain(filters);
+        return invoker;
+    }
 
     /**
      * 通过数据库获取符合规则的运单号
@@ -40,7 +56,7 @@ public class TrackNoByMysql {
     TrackResult getByMysql(KongBaoParam kongBaoParam) throws Exception {
 
         // 获取合并规则
-        PddMergeRule rule = ruleService.getRule(kongBaoParam.getOrderPrice());
+        PddMergeRule rule = ruleService.getRule(kongBaoParam.getOrderPrice(), kongBaoParam.getShopId());
         if (null == rule) {
             return new TrackResult(false,"","无对应的合并规则");
         }
@@ -68,7 +84,8 @@ public class TrackNoByMysql {
      */
     private boolean filter(KongBaoParam kongBaoParam, PddMergeRule rule, PddTrack track) throws Exception {
         RuleInvocation invocation = new RuleInvocation(kongBaoParam, rule, track);
-        Invoker invoker = Invoker.buildInvokerChain(filters);
-        return invoker.invoke(invocation);
+        return this.invoker.invoke(invocation);
     }
+
+
 }

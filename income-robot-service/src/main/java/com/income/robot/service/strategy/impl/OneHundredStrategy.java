@@ -32,7 +32,7 @@ public class OneHundredStrategy implements IKongBaoStragegy {
     @Override
     public TrackResult generateTrackNo(KongBaoParam kongBaoParam, PddKonbbaoInfo konbbaoAccount) {
         String result = kongBaoApi.send(konbbaoAccount, TYPE, createParams(kongBaoParam));
-        log.info("空包网100：接口响应:{}", result);
+        log.info("空包网100：响应:{}", result);
         if (StringUtils.isEmpty(result)) {
             return null;
         }

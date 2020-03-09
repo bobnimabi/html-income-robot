@@ -93,11 +93,9 @@ public class Server {
         MyBeanUtil.copyProperties(goodsWaitDTO, kongBaoParam);
         TrackResult trackResult = process.getTrackNo(kongBaoParam);
         if (!trackResult.getSuccess()) {
-            log.info("获取运单号失败，失败原因{}，shopId:{},orderId:{},", trackResult.getError(), goodsWaitDTO.getShopId(), goodsWaitDTO.getOrderId());
             return ResponseResult.FAIL(trackResult.getError());
         }
         TenantIncomeShopOrderPaySuccessDTO paySuccessDTO = (TenantIncomeShopOrderPaySuccessDTO) MyBeanUtil.copyProperties(goodsWaitDTO, TenantIncomeShopOrderPaySuccessDTO.class);
-        paySuccessDTO.setOrderType(Integer.valueOf(1));
         this.mqSenter.sendMessage("income.orderPaySuccessExchange", "incomeOrderPaySuccessRouteKey", paySuccessDTO);
         return ResponseResult.SUCCESS(trackResult.getTrackNo());
     }
@@ -111,7 +109,6 @@ public class Server {
      */
     public ResponseResult goodsComplete(@RequestBody TenantIncomeShopOrderDTO shopOrderDTO) throws Exception {
         TenantIncomeShopOrderPaySuccessDTO tenantIncomeShopOrderPaySuccessDTO = (TenantIncomeShopOrderPaySuccessDTO) MyBeanUtil.copyProperties(shopOrderDTO, TenantIncomeShopOrderPaySuccessDTO.class);
-        tenantIncomeShopOrderPaySuccessDTO.setOrderType(1);
         this.mqSenter.sendMessage("income.OrderDeliverGoodsExchange", "incomeOrderDeliverGoodsRouteKey", tenantIncomeShopOrderPaySuccessDTO);
         return ResponseResult.SUCCESS();
     }
@@ -125,7 +122,6 @@ public class Server {
      */
     public ResponseResult goodsConfirm(@RequestBody TenantIncomeShopOrderDTO shopOrderDTO) throws Exception {
         TenantIncomeShopOrderPaySuccessDTO tenantIncomeShopOrderPaySuccessDTO = (TenantIncomeShopOrderPaySuccessDTO) MyBeanUtil.copyProperties(shopOrderDTO, TenantIncomeShopOrderPaySuccessDTO.class);
-        tenantIncomeShopOrderPaySuccessDTO.setOrderType(1);
         this.mqSenter.sendMessage("income.orderConfirmReceiptExchange", "incomeOrderConfirmReceiptRouteKey", tenantIncomeShopOrderPaySuccessDTO);
         return ResponseResult.SUCCESS();
     }

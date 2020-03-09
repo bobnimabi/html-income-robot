@@ -1,6 +1,6 @@
 spring:
   application:
-    name: robot-pdd-transfer-server
+    name: income-robot-server
   cloud:
     refresh:
       refreshable: none #
@@ -21,7 +21,7 @@ spring:
     username: 'auto_update10'
     password: 'p7oXaL)(8det*&h^540k**76jfikc*f'
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://pdd.mysql.bbin.com/pdd_robot?characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://pdd.mysql.bbin.com/income_robot?characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
     hikari:
       minimum-idle: 5
       maximum-pool-size: 500

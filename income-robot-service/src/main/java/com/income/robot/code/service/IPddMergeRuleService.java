@@ -18,5 +18,5 @@ public interface IPddMergeRuleService extends IService<PddMergeRule> {
     /**
      * 获取规则
      */
-    PddMergeRule getRule(BigDecimal price);
+    PddMergeRule getRule(BigDecimal price,String shopId);
 }

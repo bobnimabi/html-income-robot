@@ -42,7 +42,9 @@ public class PddTrackServiceImpl extends ServiceImpl<PddTrackMapper, PddTrack> i
         track.setShopId(kongBaoParam.getShopId());
         track.setTrackNo(trackingNo);
         track.setUseNum(1);
-        track.setMergeRuleId(mergeRule.getId());
+        if (null != mergeRule) {
+            track.setMergeRuleId(mergeRule.getId());
+        }
         boolean isSave = save(track);
         if (isSave) {
             log.info("存储运单号成功：{}", JSON.toJSONString(track));
@@ -79,6 +81,8 @@ public class PddTrackServiceImpl extends ServiceImpl<PddTrackMapper, PddTrack> i
                 .eq(PddTrack::getShopId, kongBaoParam.getShopId())
                 .eq(PddTrack::getMobileNum, kongBaoParam.getLoginName())
                 .eq(PddTrack::getMergeRuleId, mergeRule.getId())
+                .orderByDesc(PddTrack::getGmtCreateTime)
+                .last("limit 1")
         );
         log.info("获取最新运单号记录为：{}", JSON.toJSONString(one));
         return one;
